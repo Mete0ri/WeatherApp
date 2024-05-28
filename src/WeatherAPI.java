@@ -26,31 +26,37 @@ public class WeatherAPI {
         }
         return null;
     }
-    public int getDay(String city){
+    public char getDay(String city){
+        char dayOrNight = 'a';
         try {
             JSONObject jsonObject = getWeatherData(getLocationData(city));
-            return (int) jsonObject.get("is_day");
+            long code =  (long) jsonObject.get("is_day");
+            if(code == 0){
+                dayOrNight = 'N';
+            }else if(code == 1){
+                dayOrNight = 'D';
+            }
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
-        return 3;
+        return dayOrNight;
     }
     public String getWeatherCondition(String city){
         String weatherCondition = null;
         try {
             JSONObject jsonObject = getWeatherData(getLocationData(city));
-            int weather = (int) jsonObject.get("weathercode");
-            if(weather == 0){
+            long code = (long) jsonObject.get("weathercode");
+            if(code == 0){
                 weatherCondition = "Clear";
-            }else if(weather > 0 && weather <= 3){
+            }else if(code > 0 && code <= 3){
                 weatherCondition = "Partly cloudy";
-            }else if(weather >= 45 && weather <= 48){
+            }else if(code >= 45 && code <= 48){
                 weatherCondition = "Fog";
-            }else if((weather >= 51 && weather <= 67) || (weather >= 80 && weather <= 82)){
+            }else if((code >= 51 && code <= 67) || (code >= 80 && code <= 82)){
                 weatherCondition = "Rainy";
-            }else if((weather >= 71 && weather <= 77) || (weather >= 85 && weather <= 86)){
+            }else if((code >= 71 && code <= 77) || (code >= 85 && code <= 86)){
                 weatherCondition = "Snowy";
-            }else if(weather >= 95 && weather <=99){
+            }else if(code >= 95 && code <=99){
                 weatherCondition = "Storm";
             }
         } catch (IOException | ParseException e) {
@@ -82,13 +88,9 @@ public class WeatherAPI {
             System.out.println("Can not connect to API");
             return null;
         }
-
         JSONArray locationData = (JSONArray) parser(readApi(connection)).get("results");
 
-        if(locationData != null && !locationData.isEmpty()){
-            return (JSONObject) locationData.get(0);
-        }
-        return null;
+        return (JSONObject) locationData.get(0);
     }
     private String readApi(HttpURLConnection connection) throws IOException{
         StringBuilder response = new StringBuilder();
