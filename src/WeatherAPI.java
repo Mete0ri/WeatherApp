@@ -62,7 +62,7 @@ public class WeatherAPI {
         double latitude = (double) locationData.get("latitude");
         double longitude = (double) locationData.get("longitude");
 
-        URL url = new URL("https://api.open-meteo.com/v1/forecast?latitude=" + latitude + "&longitude=" + longitude+ "&hourly=temperature_2m&current_weather=true");
+        URL url = new URL("https://api.open-meteo.com/v1/forecast?latitude=" + latitude + "&longitude=" + longitude + "&hourly=temperature_2m,weather_code&current_weather=true");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
 
